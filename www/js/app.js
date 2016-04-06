@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'ionic-material', 'ionMdInput'])
+angular.module('starter', ['ionic', 'starter.controllers', 'TwitterModule','ngCordova','ngCordovaOauth','ionic-material', 'ionMdInput'])
 
 .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -97,6 +97,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ionic-material', 'io
             'menuContent': {
                 templateUrl: 'templates/login.html',
                 controller: 'LoginCtrl'
+            },
+            'fabContent': {
+                template: ''
+            }
+        }
+    })
+    
+    .state('app.timeline', {
+        url: '/timeline',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/twitterFeed.html',
+                controller: 'TimelineCtrl'
             },
             'fabContent': {
                 template: ''

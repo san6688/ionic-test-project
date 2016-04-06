@@ -175,4 +175,38 @@ angular.module('starter.controllers', [])
 
 })
 
+.controller('TimelineCtrl',function($scope, $ionicPlatform, TwitterService) {
+   // console.log('am here');
+    // 1
+    $scope.correctTimestring = function(string) {
+        return new Date(Date.parse(string));
+    };
+    // 2
+    $scope.showHomeTimeline = function() {
+        
+        $scope.home_timeline = TwitterService.getHomeTimeline();
+    };
+    // 3
+    $scope.doRefresh = function() {
+        $scope.showHomeTimeline();
+        $scope.$broadcast('scroll.refreshComplete');
+    };
+    // 4
+    $ionicPlatform.ready(function() {
+       // console.log('inside ready');
+        if (TwitterService.isAuthenticated()) {
+     //       console.log('Authenicated');
+            $scope.showHomeTimeline();
+        } else {
+       //     console.log('TwitterService Initialize');
+            TwitterService.initialize().then(function(result) {
+         //       console.log('Initialize Result --> '+result);
+                if(result === true) {
+                    $scope.showHomeTimeline();
+                }
+            });
+        }
+    });
+})
+
 ;
