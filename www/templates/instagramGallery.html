@@ -1,0 +1,25 @@
+<ion-view view-title="Instagram Gallery">
+    <ion-content ng-class="{expanded:isExpanded}" class="animate-fade-slide-in">
+        <div ng-if="data.dataLoading">
+    Loading...
+</div>
+        <div class="list half" collection-repeat="item in imgs">
+            <div ui-sref="app.profile" class="card card-gallery item item-text-wrap" >
+                <div class="ink dark-bg">
+                    <!--<h3>{{item.caption.text}}</h3>-->
+                    <img class="full-image" src={{item.images.thumbnail.url}}>
+                </div>
+                <div class="item tabs tabs-secondary tabs-icon-left">
+                    <a class="tab-item stable-bg assertive">
+                        <i class="icon ion-heart"></i>
+                        
+                    </a>
+                      <a class="tab-item stable-bg positive-900">
+                        
+                        {{item.likes.count}}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

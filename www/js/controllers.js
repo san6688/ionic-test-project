@@ -175,38 +175,95 @@ angular.module('starter.controllers', [])
 
 })
 
-.controller('TimelineCtrl',function($scope, $ionicPlatform, TwitterService) {
-   // console.log('am here');
-    // 1
-    $scope.correctTimestring = function(string) {
-        return new Date(Date.parse(string));
-    };
-    // 2
-    $scope.showHomeTimeline = function() {
-        
-        $scope.home_timeline = TwitterService.getHomeTimeline();
-    };
-    // 3
-    $scope.doRefresh = function() {
-        $scope.showHomeTimeline();
-        $scope.$broadcast('scroll.refreshComplete');
-    };
-    // 4
-    $ionicPlatform.ready(function() {
-       // console.log('inside ready');
-        if (TwitterService.isAuthenticated()) {
-     //       console.log('Authenicated');
-            $scope.showHomeTimeline();
-        } else {
-       //     console.log('TwitterService Initialize');
-            TwitterService.initialize().then(function(result) {
-         //       console.log('Initialize Result --> '+result);
-                if(result === true) {
-                    $scope.showHomeTimeline();
-                }
-            });
+.controller('InstagramCtrl',function($scope,$http,ionicMaterialInk, ionicMaterialMotion){
+    console.log('inside instagramctrl');
+     $scope.$parent.showHeader();
+    $scope.$parent.clearFabs();
+    $scope.isExpanded = true;
+    $scope.$parent.setExpanded(true);
+    $scope.$parent.setHeaderFab(false);
+    
+    
+
+    
+
+ 
+    //InstagramService.getUserDetails('123');
+     var accessToken="3029425701.1677ed0.e4543e8299914b64b54631000461e5e6"
+   // $scope.getUserDetails = function(userId){
+        $http.get("https://api.instagram.com/v1/users/285647146/media/recent/?access_token="+accessToken)
+    .success(function(response) {
+    $scope.imgs = [];
+    angular.forEach(response.data, function(value, key) {
+       // alert(value.type);
+        if("image" == value.type){
+            $scope.imgs.push(value);    
         }
     });
+
+//alert('imgs size: '+$scope.imgs.length);
+        // Activate ink for controller
+        
+        ionicMaterialMotion.pushDown({
+        selector: '.push-down'
+    });
+    ionicMaterialMotion.fadeSlideInRight({
+        selector: '.animate-fade-slide-in .item'
+    });
+    ionicMaterialInk.displayEffect();
+
+   
+    });
+    //};
+})
+
+.controller('TimelineCtrl',function($scope, $ionicPlatform, $twitterApi, $cordovaOauth) {
+   // console.log('am here');
+   
+    var twitterKey = "myTwitterKey";
+    var clientId = 'zAbDUhLWWtRAfFv5arTqB9sVA';
+    var clientSecret = '1daQAXzfysjeRqnUdq5ndiMsyhAcKxJ6wIPaXBoXo1xQjxlGZd';
+    var myToken = '';
+    $scope.tweet = {};
+ 
+$ionicPlatform.ready(function() {
+  myToken = JSON.parse(window.localStorage.getItem(twitterKey));
+  if (myToken === '' || myToken === null) {
+    $cordovaOauth.twitter(clientId, clientSecret).then(function (succ) {
+      myToken = succ;
+      window.localStorage.setItem(twitterKey, JSON.stringify(succ));
+      $twitterApi.configure(clientId, clientSecret, succ);
+      $scope.showHomeTimeline();
+    }, function(error) {
+      console.log(error);
+    });
+  } else {
+    $twitterApi.configure(clientId, clientSecret, myToken);
+    $scope.showHomeTimeline();
+  }
+});
+
+$scope.showHomeTimeline = function() {
+  $twitterApi.getHomeTimeline().then(function(data) {
+    $scope.home_timeline = data;
+  });
+};
+ 
+$scope.submitTweet = function() {
+  $twitterApi.postStatusUpdate($scope.tweet.message).then(function(result) {
+    $scope.showHomeTimeline();
+  });
+}
+ 
+$scope.doRefresh = function() {
+  $scope.showHomeTimeline();
+  $scope.$broadcast('scroll.refreshComplete');
+};
+ 
+$scope.correctTimestring = function(string) {
+  return new Date(Date.parse(string));
+};
+
 })
 
 ;

@@ -4,7 +4,7 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers', 'TwitterModule','ngCordova','ngCordovaOauth','ionic-material', 'ionMdInput'])
+angular.module('starter', ['ionic', 'starter.controllers', 'InstagramModule','TwitterModule','ngCordova','ngCordovaOauth','ngTwitter','ionic-material', 'ionMdInput'])
 
 .run(function($ionicPlatform) {
     $ionicPlatform.ready(function() {
@@ -104,7 +104,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'TwitterModule','ngCo
         }
     })
     
-    .state('app.timeline', {
+    .state('app.Timeline', {
         url: '/timeline',
         views: {
             'menuContent': {
@@ -113,6 +113,24 @@ angular.module('starter', ['ionic', 'starter.controllers', 'TwitterModule','ngCo
             },
             'fabContent': {
                 template: ''
+            }
+        }
+    })
+    
+    .state('app.Instagram', {
+        url: '/instagram',
+        views: {
+            'menuContent': {
+                templateUrl: 'templates/instagramGallery.html',
+                controller: 'InstagramCtrl'
+            },
+            'fabContent': {
+                template: '<button id="fab-gallery" class="button button-fab button-fab-top-right expanded button-energized-900 drop"><i class="icon ion-heart"></i></button>',
+                controller: function ($timeout) {
+                    $timeout(function () {
+                        document.getElementById('fab-gallery').classList.toggle('on');
+                    }, 600);
+                }
             }
         }
     })
